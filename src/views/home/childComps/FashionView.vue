@@ -7,8 +7,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "FashionView",
+};
 </script>
 
 <style scoped>
+.fashion img {
+  width: 100%;
+}
 </style>
