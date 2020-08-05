@@ -92,6 +92,16 @@ export default {
       refresh();
     });
   },
+  activated() {
+    // console.log("activated");
+    this.$refs.scrollRef.scrollTo(0, this.saveY, 10);
+    this.$refs.scrollRef.refresh();
+  },
+  deactivated() {
+    // console.log("deactivated");
+    console.log(this.saveY);
+    this.saveY = this.$refs.scrollRef.getScrollY();
+  },
   methods: {
     /**监听事件相关方法 */
     tabClick(index) {

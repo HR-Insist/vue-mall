@@ -1,7 +1,19 @@
-<template></template>
+<template>
+  <div>{{iid}}</div>
+</template>
 
 <script>
-export default {};
+export default {
+  name: "Detail",
+  data() {
+    return {
+      iid: null,
+    };
+  },
+  created() {
+    this.iid = this.$route.params.iid;
+  },
+};
 </script>
 
 <style>
