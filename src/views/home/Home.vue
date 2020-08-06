@@ -150,7 +150,7 @@ export default {
 <style scoped>
 #home {
   /* padding-bottom: 49px; */
-  height: calc(100vh - var(--tab-bar-height));
+  height: calc(100vh - 49px);
 }
 .home-nav {
   position: relative;
@@ -159,7 +159,7 @@ export default {
   z-index: 1;
 }
 .content {
-  height: calc(100% - var(--nav-bar-height));
+  height: calc(100% - 44px);
   overflow: hidden;
 }
 .tab {

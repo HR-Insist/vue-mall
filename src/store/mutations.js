@@ -1,4 +1,4 @@
-export default mutations = {
+export default {
   addProductCount(state, payload) {
     state.cartList[payload].count++
   },

@@ -1,4 +1,4 @@
-export default actions = {
+export default {
   addProductToCart({
     state,
     commit
