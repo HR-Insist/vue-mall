@@ -33,7 +33,6 @@ import Navbar from "components/common/navbar/Navbar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "components/content/backTop/BackTop";
 
 import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
@@ -41,6 +40,7 @@ import FashionView from "./childComps/FashionView";
 
 import { getHomeMultiData, getHomeGoods } from "network/home.js";
 import { debounce } from "@/common/utils";
+import { backTopMixin } from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -49,7 +49,6 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    BackTop,
     HomeSwiper,
     RecommendView,
     FashionView,
@@ -64,12 +63,13 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
+      imageListner: null,
     };
   },
+  mixins: [backTopMixin],
   computed: {
     currentList() {
       return this.goods[this.currentType].list;
@@ -87,10 +87,10 @@ export default {
   },
   mounted() {
     // 监听事件总线---> 商品图片加载完成
-    const refresh = debounce(this.$refs.scrollRef.refresh, 500);
-    this.$bus.$on("itemImageLoad", () => {
-      refresh();
-    });
+    this.imageListner = () => {
+      debounce(this.$refs.scrollRef.refresh, 500)();
+    };
+    this.$bus.$on("itemImageLoad", this.imageListner);
   },
   activated() {
     // console.log("activated");
@@ -99,8 +99,10 @@ export default {
   },
   deactivated() {
     // console.log("deactivated");
-    console.log(this.saveY);
+    // console.log(this.saveY);
     this.saveY = this.$refs.scrollRef.getScrollY();
+    // 离开页面，取消图片加载监听
+    this.$bus.$off("itemImageLoad", this.imageListner);
   },
   methods: {
     /**监听事件相关方法 */
@@ -109,14 +111,11 @@ export default {
       this.$refs.tabControl.currentIndex = index;
       this.$refs.tabControlClone.currentIndex = index;
     },
-    backTop() {
-      this.$refs.scrollRef.scrollTo(0, 0, 300);
-    },
     contentScroll(position) {
       // 判断backTop 是否显示
       this.isShowBackTop = position.y < -1000;
       // 判断tabControl是的需要吸顶
-      this.isTabFixed = -position.y > this.tabOffsetTop;
+      this.isTabFixed = -position.y > this.tabOffsetTop - 44;
     },
     loadMore() {
       this.getHomeGoods(this.currentType);
@@ -151,15 +150,16 @@ export default {
 <style scoped>
 #home {
   /* padding-bottom: 49px; */
-  height: 100vh;
+  height: calc(100vh - var(--tab-bar-height));
 }
 .home-nav {
+  position: relative;
   background-color: var(--color-tint);
   color: #fff;
-  z-index: 9;
+  z-index: 1;
 }
 .content {
-  height: calc(100vh - 44px - 49px);
+  height: calc(100% - var(--nav-bar-height));
   overflow: hidden;
 }
 .tab {
@@ -167,6 +167,6 @@ export default {
   top: 44px;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 2;
 }
 </style>

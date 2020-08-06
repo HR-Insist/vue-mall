@@ -1,9 +1,9 @@
 <template>
   <div>
-    <keep-alive>
+    <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
-    <MainTabbar></MainTabbar>
+    <main-tabbar></main-tabbar>
   </div>
 </template>
 
